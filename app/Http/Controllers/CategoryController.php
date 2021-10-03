@@ -3,9 +3,27 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use Exception;
 
 class CategoryController extends Controller
 {
+
+    public function get($id = 0)
+    {
+        try {
+            if (empty($id)) {
+
+                $result = Category::all();
+            } else {
+                $result = Category::findOrFail($id);
+            }
+
+            return response()->json(['message' => 'Success Get Data', 'data' => $result], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage(), 'code' => $e->getCode()]);
+        }
+    }
+
     public function create()
     {
         try {
