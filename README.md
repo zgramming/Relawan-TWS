@@ -13,7 +13,9 @@ Rest API untuk menampilkan daftar event-event yang dapat diikuti relawan, selain
 
 # Testing
 
-## API **Category**
+<details>
+<summary> API Category</summary>
+
 
 - Get Category
 
@@ -122,24 +124,27 @@ Rest API untuk menampilkan daftar event-event yang dapat diikuti relawan, selain
 
 - Delete
 
-<details>
-  <summary>(DELETE) http://127.0.0.1:8000/api/category</summary>
+    <details>
+    <summary>(DELETE) http://127.0.0.1:8000/api/category</summary>
 
-```json
-{
-    "message": "Delete Success",
-    "data": {
-        "id": 9,
-        "name": "Olahraga",
-        "description": "Olahraga",
-        "created_at": "2021-10-03T14:30:46.000000Z",
-        "updated_at": "2021-10-03T15:56:30.000000Z"
+    ```json
+    {
+        "message": "Delete Success",
+        "data": {
+            "id": 9,
+            "name": "Olahraga",
+            "description": "Olahraga",
+            "created_at": "2021-10-03T14:30:46.000000Z",
+            "updated_at": "2021-10-03T15:56:30.000000Z"
+        }
     }
-}
 
-```
+    ```
+    </details>
+
 </details>
 
+<br>
 
 # Issues
 
