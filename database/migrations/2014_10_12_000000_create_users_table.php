@@ -21,6 +21,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->date('birth_date');
             $table->enum('type', ['relawan', 'organization']);
+            $table->text('picture_profile');
             $table->rememberToken();
             $table->timestamps();
         });

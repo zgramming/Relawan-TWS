@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\TypeOrganization;
-use Illuminate\Http\Request;
 
 class TypeOrganizationController extends Controller
 {
