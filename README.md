@@ -1,6 +1,6 @@
 <p align="center"><img src="assets/images/banner.jpg" width="1700"></p>
 
-# API Relawan
+# API Relevant
 
 Rest API untuk menampilkan daftar event-event yang dapat diikuti relawan, selain itu dapat juga membuat event dengan ketentuan harus berupa organisasi.
 
