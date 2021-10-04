@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
+use App\Models\TypeOrganization;
+use Illuminate\Http\Request;
 
-class CategoryController extends Controller
+class TypeOrganizationController extends Controller
 {
-
     public function get($id = 0)
     {
         try {
             if (empty($id)) {
 
-                $result = Category::all();
+                $result = TypeOrganization::all();
             } else {
-                $result = Category::findOrFail($id);
+                $result = TypeOrganization::findOrFail($id);
             }
 
             return response()->json(['message' => 'Success Get Data', 'data' => $result], 200);
@@ -28,15 +28,15 @@ class CategoryController extends Controller
         try {
             $request = request();
 
-            $category = new Category();
-            $category->name = $request->name;
-            $category->description = $request->description;
-            $category->save();
+            $typeOrganization = new TypeOrganization();
+            $typeOrganization->name = $request->name;
+            $typeOrganization->description = $request->description;
+            $typeOrganization->save();
 
             return response()->json(
                 [
                     'message' => 'Create Success',
-                    'data' => $category,
+                    'data' => $typeOrganization,
 
                 ],
                 201,
@@ -50,15 +50,15 @@ class CategoryController extends Controller
     {
         try {
             $request = request();
-            $category = Category::findOrFail($request->id);
+            $typeOrganization = TypeOrganization::findOrFail($request->id);
 
-            $category->name = $request->name;
-            $category->description = $request->description;
-            $category->update();
+            $typeOrganization->name = $request->name;
+            $typeOrganization->description = $request->description;
+            $typeOrganization->update();
             return response()->json(
                 [
                     'message' => 'Update Success',
-                    'data' => $category,
+                    'data' => $typeOrganization,
                 ],
                 200,
             );
@@ -71,14 +71,14 @@ class CategoryController extends Controller
     {
         try {
             $request = request();
-            $category = Category::findOrFail($request->id);
+            $typeOrganization = TypeOrganization::findOrFail($request->id);
 
-            $category->delete();
+            $typeOrganization->delete();
 
             return response()->json(
                 [
                     'message' => 'Delete Success',
-                    'data' => $category,
+                    'data' => $typeOrganization,
                 ],
                 200,
             );
