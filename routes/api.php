@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\TypeOrganizationController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -25,7 +26,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('category', [CategoryController::class, 'get']);
 Route::get('category/{id}', [CategoryController::class, 'get']);
 Route::post('category', [CategoryController::class, 'create']);
-Route::put('category', [CategoryController::class, 'update']);
+Route::patch('category', [CategoryController::class, 'update']);
 Route::delete('category', [CategoryController::class, 'delete']);
 /// END CATEGORY API
 
@@ -33,7 +34,7 @@ Route::delete('category', [CategoryController::class, 'delete']);
 Route::get('type_organization', [TypeOrganizationController::class, 'get']);
 Route::get('type_organization/{id}', [TypeOrganizationController::class, 'get']);
 Route::post('type_organization', [TypeOrganizationController::class, 'create']);
-Route::put('type_organization', [TypeOrganizationController::class, 'update']);
+Route::patch('type_organization', [TypeOrganizationController::class, 'update']);
 Route::delete('type_organization', [TypeOrganizationController::class, 'delete']);
 /// END [TYPE ORGANIZATION] API
 
@@ -42,5 +43,12 @@ Route::get('user', [UserController::class, 'get']);
 Route::get('user/{id}', [UserController::class, 'get']);
 Route::post('user', [UserController::class, 'create']);
 Route::post('login', [UserController::class, 'login']);
-Route::put('user', [UserController::class, 'update']);
+Route::patch('user', [UserController::class, 'update']);
 /// END [USER] API
+
+/// START [ORGANIZATION] API
+Route::get('organization', [OrganizationController::class, 'get']);
+Route::get('organization/{id}', [OrganizationController::class, 'get']);
+Route::post('organization', [OrganizationController::class, 'create']);
+Route::put('organization/update', [OrganizationController::class, 'update']);
+/// END [ORGANIZATION] API
