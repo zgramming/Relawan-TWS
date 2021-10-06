@@ -2,23 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Organization;
+use App\Models\Event;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\File;
 use Illuminate\Validation\ValidationException;
 use Intervention\Image\ImageManagerStatic as Image;
 
-
-class OrganizationController extends Controller
+class EventController extends Controller
 {
     public function get($id = 0)
     {
         try {
-
             if (empty($id)) {
-                $result = Organization::all();
+                $result = Event::all();
             } else {
-                $result = Organization::findOrFail($id);
+                $result = Event::findOrFail($id);
             }
 
             return response()->json(['message' => 'Success get', 'data' => $result]);
@@ -34,43 +32,50 @@ class OrganizationController extends Controller
         }
     }
 
-    public function create(int $idUser = 0)
+    public function create()
     {
         try {
             $request = request();
             $request->validate([
-                'id_type_organization' => 'required|integer',
-                'name' => 'required',
-                'date_establishment' => 'required|date',
-                'address' => 'required'
+                'id_organization' => 'required|integer',
+                'title' => 'required',
+                'description' => 'required',
+                'start_date' => 'required|date',
+                'end_date' => 'required|date',
+                'location' => 'required',
+                'type' => 'required',
+                'quota' => 'required|integer',
+                'is_unlimited' => 'required',
+                'image' => 'required'
             ]);
 
-            $organization = new Organization();
-            $organization->id_user = $idUser;
-            $organization->id_type_organization = $request->id_type_organization;
-            $organization->name = $request->name;
-            $organization->date_establishment = $request->date_establishment;
-            $organization->address = $request->address;
-            $organization->phone = $request->phone;
-            $organization->website = $request->website;
+            $event = new Event();
+            $event->id_organization = $request->id_organization;
+            $event->title = $request->title;
+            $event->description = $request->description;
+            $event->start_date = $request->start_date;
+            $event->end_date = $request->end_date;
+            $event->location = $request->location;
+            $event->type = $request->type;
+            $event->quota = $request->quota;
+            $event->is_unlimited = $request->is_unlimited;
 
-            if ($request->hasFile('logo')) {
-                $image = $request->file('logo');
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
                 $filename = uniqid() . "." . $image->getClientOriginalExtension();
-                $path = public_path() . '/organization/image/';
+                $path = public_path() . '/event/image/';
 
                 if (!File::exists($path)) {
                     File::makeDirectory($path, 0777, true);
                 }
 
                 Image::make($image)->resize(400, 400)->save($path . $filename);
-                $organization->logo = $filename;
+                $event->image = $filename;
             }
 
-            $organization->save();
+            $event->save();
 
-            // return true;
-            return true;
+            return response()->json(['message' => 'success create', 'data' => $event], 201);
         } catch (ValidationException $e) {
             /// Get first error with [current] function
             return response()->json(['error' => current($e->errors())], 400);
@@ -90,39 +95,45 @@ class OrganizationController extends Controller
             $request->merge(['_method' => 'PUT']);
 
             $request->validate([
-                'id_user' => 'required|integer',
-                'id_type_organization' => 'required|integer',
-                'name' => 'required',
-                'date_establishment' => 'required|date',
-                'address' => 'required'
+                'id_organization' => 'required|integer',
+                'title' => 'required',
+                'description' => 'required',
+                'start_date' => 'required|date',
+                'end_date' => 'required|date',
+                'location' => 'required',
+                'type' => 'required',
+                'quota' => 'required|integer',
+                'is_unlimited' => 'required',
+                'image' => 'required',
             ]);
 
-            $organization = Organization::findOrFail($request->id);
-            $organization->id_user = $request->id_user;
-            $organization->id_type_organization = $request->id_type_organization;
-            $organization->name = $request->name;
-            $organization->date_establishment = $request->date_establishment;
-            $organization->address = $request->address;
-            $organization->phone = $request->phone;
-            $organization->website = $request->website;
+            $event = Event::findOrFail($request->id);
+            $event->id_organization = $request->id_organization;
+            $event->title = $request->title;
+            $event->description = $request->description;
+            $event->start_date = $request->start_date;
+            $event->end_date = $request->end_date;
+            $event->location = $request->location;
+            $event->type = $request->type;
+            $event->quota = $request->quota;
+            $event->is_unlimited = $request->is_unlimited;
 
-            if ($request->hasFile('logo')) {
-                $image = $request->file('logo');
-                $filename = $organization->logo;
-                $path = public_path() . '/organization/image/';
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $filename = $event->image;
+                $path = public_path() . '/event/image/';
 
                 if (!File::exists($path)) {
                     File::makeDirectory($path, 0777, true);
                 }
 
                 Image::make($image)->resize(400, 400)->save($path . $filename);
-                $organization->logo = $filename;
+                $event->image = $filename;
             }
 
-            $organization->update();
+            $event->update();
 
-            // return true;
-            return true;
+            return response()->json(['message' => 'success update', 'data' => $event], 201);
         } catch (ValidationException $e) {
             /// Get first error with [current] function
             return response()->json(['error' => current($e->errors())], 400);

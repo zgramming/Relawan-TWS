@@ -24,6 +24,7 @@ class CreateEvent extends Migration
             $table->enum('type', ['online', 'offline']);
             $table->integer('quota');
             $table->boolean('is_unlimited');
+            $table->text('image');
             $table->timestamps();
         });
     }

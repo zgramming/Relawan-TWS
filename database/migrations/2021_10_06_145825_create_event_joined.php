@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateEventCategory extends Migration
+class CreateEventJoined extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,11 @@ class CreateEventCategory extends Migration
      */
     public function up()
     {
-        Schema::create('event_category', function (Blueprint $table) {
+        Schema::create('event_joined', function (Blueprint $table) {
             $table->id();
+            $table->integer('id_user');
             $table->integer('id_event');
-            $table->integer('id_category');
+            $table->date('joined_date');
             $table->timestamps();
         });
     }
@@ -28,6 +29,6 @@ class CreateEventCategory extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('event_category');
+        Schema::dropIfExists('event_joined');
     }
 }

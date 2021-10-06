@@ -5,11 +5,19 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Exception;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
+    protected $organizationController;
+
+    public function __construct(OrganizationController $organizationController)
+    {
+        $this->organizationController = $organizationController;
+    }
+
     public function get($id = 0)
     {
 
@@ -64,24 +72,31 @@ class UserController extends Controller
     public function create()
     {
         try {
-            $request = request();
+            DB::transaction(function () {
 
-            $request->validate([
-                'name' => 'required',
-                'email' => 'required|email|unique:users,email',
-                'password' => 'required',
-                'type' => 'required'
-            ]);
+                $request = request();
 
-            $user = new User();
-            $user->name  = $request->name;
-            $user->email  = $request->email;
-            $user->password  = Hash::make($request->password);
-            $user->type  = $request->type;
+                $request->validate([
+                    'name' => 'required',
+                    'email' => 'required|email|unique:users,email',
+                    'password' => 'required',
+                    'type' => 'required'
+                ]);
 
-            $user->save();
+                $user = new User();
+                $user->name  = $request->name;
+                $user->email  = $request->email;
+                $user->password  = Hash::make($request->password);
+                $user->type  = $request->type;
 
-            return response()->json(['message' => 'Create Success', 'data' => $user]);
+                $user->save();
+
+                if ($request->type == 'organization') {
+                    $this->organizationController->create($user->id);
+                }
+
+                return response()->json(['message' => 'Create Success', 'data' => $user]);
+            });
         } catch (ValidationException $e) {
             /// Get first error with [current] function
             return response()->json(['error' => current($e->errors())], 400);

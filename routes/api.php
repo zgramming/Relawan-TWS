@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\EventCategoryController;
+use App\Http\Controllers\EventController;
+use App\Http\Controllers\EventJoinedController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\TypeOrganizationController;
 use App\Http\Controllers\UserController;
@@ -49,6 +52,30 @@ Route::put('user', [UserController::class, 'update']);
 /// START [ORGANIZATION] API
 Route::get('organization', [OrganizationController::class, 'get']);
 Route::get('organization/{id}', [OrganizationController::class, 'get']);
-Route::post('organization', [OrganizationController::class, 'create']);
+// Route::post('organization', [OrganizationController::class, 'create']);
 Route::put('organization/update', [OrganizationController::class, 'update']);
 /// END [ORGANIZATION] API
+
+/// START [EVENT] API
+Route::get('event', [EventController::class, 'get']);
+Route::get('event/{id}', [EventController::class, 'get']);
+Route::post('event', [EventController::class, 'create']);
+Route::put('event/update', [EventController::class, 'update']);
+Route::delete('event', [EventController::class, 'delete']);
+/// END [EVENT] API
+
+/// START [EVENT_CATEGORY] API
+Route::get('eventCategory', [EventCategoryController::class, 'get']);
+Route::get('eventCategory/{id}', [EventCategoryController::class, 'get']);
+Route::post('eventCategory', [EventCategoryController::class, 'create']);
+Route::put('eventCategory/update', [EventCategoryController::class, 'update']);
+Route::delete('eventCategory', [EventCategoryController::class, 'delete']);
+/// END [EVENT_CATEGORY] API
+
+/// START [EVENT_JOINED] API
+Route::get('eventJoined', [EventJoinedController::class, 'get']);
+Route::get('eventJoined/{id}', [EventJoinedController::class, 'get']);
+Route::post('eventJoined', [EventJoinedController::class, 'create']);
+// Route::put('eventJoined/update', [EventJoinedController::class, 'update']);
+Route::delete('eventJoined', [EventJoinedController::class, 'delete']);
+/// END [EVENT_JOINED] API
