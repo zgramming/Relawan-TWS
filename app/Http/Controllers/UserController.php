@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserPost;
 use App\Models\User;
 use Exception;
 use Illuminate\Database\QueryException;
@@ -71,38 +72,40 @@ class UserController extends Controller
 
     public function create()
     {
+        DB::beginTransaction();
         try {
-            DB::transaction(function () {
-
-                $request = request();
-
-                $request->validate([
+            $request = request();
+            $request->validate(
+                [
                     'name' => 'required',
                     'email' => 'required|email|unique:users,email',
                     'password' => 'required',
                     'type' => 'required'
-                ]);
+                ]
+            );
+            $user = new User();
+            $user->name  = $request->name;
+            $user->email  = $request->email;
+            $user->password  = Hash::make($request->password);
+            $user->type  = $request->type;
 
-                $user = new User();
-                $user->name  = $request->name;
-                $user->email  = $request->email;
-                $user->password  = Hash::make($request->password);
-                $user->type  = $request->type;
+            $user->save();
 
-                $user->save();
+            if ($request->type == 'organization') {
+                $this->organizationController->create($user->id);
+            }
 
-                if ($request->type == 'organization') {
-                    $this->organizationController->create($user->id);
-                }
-
-                return response()->json(['message' => 'Create Success', 'data' => $user]);
-            });
+            DB::commit();
+            return response()->json(['message' => 'Create Success', 'data' => $user]);
         } catch (ValidationException $e) {
+            DB::rollBack();
             /// Get first error with [current] function
             return response()->json(['error' => current($e->errors())], 400);
         } catch (QueryException $e) {
+            DB::rollBack();
             return response()->json(['sql_code' => $e->getSql(), 'message' => $e->getMessage()], 400);
         } catch (\Exception $e) {
+            DB::rollBack();
             $code = $e->getCode();
             $message = $e->getMessage();
             return response()->json(['message' => $message], $code);

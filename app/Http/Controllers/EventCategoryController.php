@@ -110,8 +110,15 @@ class EventCategoryController extends Controller
                 ],
                 200,
             );
+        } catch (ValidationException $e) {
+            /// Get first error with [current] function
+            return response()->json(['error' => current($e->errors())], 400);
+        } catch (QueryException $e) {
+            return response()->json(['sql_code' => $e->getSql(), 'message' => $e->getMessage()], 400);
         } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage(), 'code' => $e->getCode()]);
+            $code = $e->getCode() ?: 400;
+            $message = $e->getMessage();
+            return response()->json(['message' => $message], $code);
         }
     }
 }

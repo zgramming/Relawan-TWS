@@ -53,14 +53,14 @@ Route::put('user', [UserController::class, 'update']);
 Route::get('organization', [OrganizationController::class, 'get']);
 Route::get('organization/{id}', [OrganizationController::class, 'get']);
 // Route::post('organization', [OrganizationController::class, 'create']);
-Route::put('organization/update', [OrganizationController::class, 'update']);
+Route::put('organization', [OrganizationController::class, 'update']);
 /// END [ORGANIZATION] API
 
 /// START [EVENT] API
 Route::get('event', [EventController::class, 'get']);
 Route::get('event/{id}', [EventController::class, 'get']);
 Route::post('event', [EventController::class, 'create']);
-Route::put('event/update', [EventController::class, 'update']);
+Route::put('event', [EventController::class, 'update']);
 Route::delete('event', [EventController::class, 'delete']);
 /// END [EVENT] API
 
@@ -68,7 +68,7 @@ Route::delete('event', [EventController::class, 'delete']);
 Route::get('eventCategory', [EventCategoryController::class, 'get']);
 Route::get('eventCategory/{id}', [EventCategoryController::class, 'get']);
 Route::post('eventCategory', [EventCategoryController::class, 'create']);
-Route::put('eventCategory/update', [EventCategoryController::class, 'update']);
+Route::put('eventCategory', [EventCategoryController::class, 'update']);
 Route::delete('eventCategory', [EventCategoryController::class, 'delete']);
 /// END [EVENT_CATEGORY] API
 

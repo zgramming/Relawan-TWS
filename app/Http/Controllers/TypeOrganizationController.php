@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\TypeOrganization;
+use Illuminate\Database\QueryException;
+use Illuminate\Validation\ValidationException;
 
 class TypeOrganizationController extends Controller
 {
@@ -17,8 +19,15 @@ class TypeOrganizationController extends Controller
             }
 
             return response()->json(['message' => 'Success Get Data', 'data' => $result], 200);
+        } catch (ValidationException $e) {
+            /// Get first error with [current] function
+            return response()->json(['error' => current($e->errors())], 400);
+        } catch (QueryException $e) {
+            return response()->json(['sql_code' => $e->getSql(), 'message' => $e->getMessage()], 400);
         } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage(), 'code' => $e->getCode()]);
+            $code = $e->getCode() ?: 400;
+            $message = $e->getMessage();
+            return response()->json(['message' => $message], $code);
         }
     }
 
@@ -26,6 +35,11 @@ class TypeOrganizationController extends Controller
     {
         try {
             $request = request();
+
+            $request->validate([
+                'name' => 'required',
+                'description' => 'required',
+            ]);
 
             $typeOrganization = new TypeOrganization();
             $typeOrganization->name = $request->name;
@@ -40,8 +54,15 @@ class TypeOrganizationController extends Controller
                 ],
                 201,
             );
+        } catch (ValidationException $e) {
+            /// Get first error with [current] function
+            return response()->json(['error' => current($e->errors())], 400);
+        } catch (QueryException $e) {
+            return response()->json(['sql_code' => $e->getSql(), 'message' => $e->getMessage()], 400);
         } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage(), 'code' => $e->getCode()]);
+            $code = $e->getCode() ?: 400;
+            $message = $e->getMessage();
+            return response()->json(['message' => $message], $code);
         }
     }
 
@@ -49,6 +70,12 @@ class TypeOrganizationController extends Controller
     {
         try {
             $request = request();
+
+            $request->validate([
+                'name' => 'required',
+                'description' => 'required',
+            ]);
+
             $typeOrganization = TypeOrganization::findOrFail($request->id);
 
             $typeOrganization->name = $request->name;
@@ -61,8 +88,15 @@ class TypeOrganizationController extends Controller
                 ],
                 200,
             );
+        } catch (ValidationException $e) {
+            /// Get first error with [current] function
+            return response()->json(['error' => current($e->errors())], 400);
+        } catch (QueryException $e) {
+            return response()->json(['sql_code' => $e->getSql(), 'message' => $e->getMessage()], 400);
         } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage(), 'code' => $e->getCode()]);
+            $code = $e->getCode() ?: 400;
+            $message = $e->getMessage();
+            return response()->json(['message' => $message], $code);
         }
     }
 
@@ -81,8 +115,15 @@ class TypeOrganizationController extends Controller
                 ],
                 200,
             );
+        } catch (ValidationException $e) {
+            /// Get first error with [current] function
+            return response()->json(['error' => current($e->errors())], 400);
+        } catch (QueryException $e) {
+            return response()->json(['sql_code' => $e->getSql(), 'message' => $e->getMessage()], 400);
         } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage(), 'code' => $e->getCode()]);
+            $code = $e->getCode() ?: 400;
+            $message = $e->getMessage();
+            return response()->json(['message' => $message], $code);
         }
     }
 }

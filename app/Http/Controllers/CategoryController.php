@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use Illuminate\Database\QueryException;
+use Illuminate\Validation\ValidationException;
 
 class CategoryController extends Controller
 {
@@ -18,8 +20,15 @@ class CategoryController extends Controller
             }
 
             return response()->json(['message' => 'Success Get Data', 'data' => $result], 200);
+        } catch (ValidationException $e) {
+            /// Get first error with [current] function
+            return response()->json(['error' => current($e->errors())], 400);
+        } catch (QueryException $e) {
+            return response()->json(['sql_code' => $e->getSql(), 'message' => $e->getMessage()], 400);
         } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage(), 'code' => $e->getCode()]);
+            $code = $e->getCode();
+            $message = $e->getMessage();
+            return response()->json(['message' => $message], $code);
         }
     }
 
@@ -27,6 +36,11 @@ class CategoryController extends Controller
     {
         try {
             $request = request();
+
+            $request->validate([
+                'name' => 'required',
+                'description' => 'required',
+            ]);
 
             $category = new Category();
             $category->name = $request->name;
@@ -41,8 +55,15 @@ class CategoryController extends Controller
                 ],
                 201,
             );
+        } catch (ValidationException $e) {
+            /// Get first error with [current] function
+            return response()->json(['error' => current($e->errors())], 400);
+        } catch (QueryException $e) {
+            return response()->json(['sql_code' => $e->getSql(), 'message' => $e->getMessage()], 400);
         } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage(), 'code' => $e->getCode()]);
+            $code = $e->getCode() ?: 400;
+            $message = $e->getMessage();
+            return response()->json(['message' => $message], $code);
         }
     }
 
@@ -50,6 +71,12 @@ class CategoryController extends Controller
     {
         try {
             $request = request();
+
+            $request->validate([
+                'name' => 'required',
+                'description' => 'required',
+            ]);
+
             $category = Category::findOrFail($request->id);
 
             $category->name = $request->name;
@@ -62,8 +89,15 @@ class CategoryController extends Controller
                 ],
                 200,
             );
+        } catch (ValidationException $e) {
+            /// Get first error with [current] function
+            return response()->json(['error' => current($e->errors())], 400);
+        } catch (QueryException $e) {
+            return response()->json(['sql_code' => $e->getSql(), 'message' => $e->getMessage()], 400);
         } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage(), 'code' => $e->getCode()]);
+            $code = $e->getCode() ?: 400;
+            $message = $e->getMessage();
+            return response()->json(['message' => $message], $code);
         }
     }
 
@@ -82,8 +116,15 @@ class CategoryController extends Controller
                 ],
                 200,
             );
+        } catch (ValidationException $e) {
+            /// Get first error with [current] function
+            return response()->json(['error' => current($e->errors())], 400);
+        } catch (QueryException $e) {
+            return response()->json(['sql_code' => $e->getSql(), 'message' => $e->getMessage()], 400);
         } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage(), 'code' => $e->getCode()]);
+            $code = $e->getCode() ?: 400;
+            $message = $e->getMessage();
+            return response()->json(['message' => $message], $code);
         }
     }
 }

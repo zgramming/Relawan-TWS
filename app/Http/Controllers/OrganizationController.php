@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Organization;
+use Exception;
 use Illuminate\Database\QueryException;
+use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Validation\ValidationException;
 use Intervention\Image\ImageManagerStatic as Image;
@@ -37,6 +39,7 @@ class OrganizationController extends Controller
     public function create(int $idUser = 0)
     {
         try {
+
             $request = request();
             $request->validate([
                 'id_type_organization' => 'required|integer',
@@ -44,6 +47,7 @@ class OrganizationController extends Controller
                 'date_establishment' => 'required|date',
                 'address' => 'required'
             ]);
+
 
             $organization = new Organization();
             $organization->id_user = $idUser;
@@ -73,13 +77,16 @@ class OrganizationController extends Controller
             return true;
         } catch (ValidationException $e) {
             /// Get first error with [current] function
-            return response()->json(['error' => current($e->errors())], 400);
+            // return response()->json(['error' => current($e->errors())], 400);
+            throw new Exception(current($e->errors())[0], 400);
         } catch (QueryException $e) {
-            return response()->json(['sql_code' => $e->getSql(), 'message' => $e->getMessage()], 400);
+            // return response()->json(['sql_code' => $e->getSql(), 'message' => $e->getMessage()], 400);
+            throw new Exception($e->getSql(), 400);
         } catch (\Exception $e) {
             $code = $e->getCode() ?: 400;
             $message = $e->getMessage();
-            return response()->json(['message' => $message], $code);
+            // return response()->json(['message' => $message], $code);
+            throw new Exception($message, $code);
         }
     }
 
