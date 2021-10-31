@@ -61,12 +61,12 @@ class EventJoinedController extends Controller
         }
     }
 
-    public function delete()
+    public function delete($id = 0)
     {
         try {
             $request = request();
 
-            $eventJoined = EventJoined::findOrFail($request->id);
+            $eventJoined = EventJoined::findOrFail($id);
 
             $eventJoined->delete();
 

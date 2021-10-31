@@ -65,7 +65,7 @@ class EventCategoryController extends Controller
         }
     }
 
-    public function update()
+    public function update($id = 0)
     {
         try {
             $request = request();
@@ -74,7 +74,7 @@ class EventCategoryController extends Controller
                 'id_category' => 'required|integer',
             ]);
 
-            $event = EventCategory::findOrFail($request->id);
+            $event = EventCategory::findOrFail($id);
             $event->id_event = $request->id_event;
             $event->id_category = $request->id_category;
 
@@ -94,12 +94,10 @@ class EventCategoryController extends Controller
         }
     }
 
-    public function delete()
+    public function delete($id = 0)
     {
         try {
-            $request = request();
-
-            $eventCategory = EventCategory::findOrFail($request->id);
+            $eventCategory = EventCategory::findOrFail($id);
 
             $eventCategory->delete();
 

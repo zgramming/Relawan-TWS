@@ -29,16 +29,16 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('category', [CategoryController::class, 'get']);
 Route::get('category/{id}', [CategoryController::class, 'get']);
 Route::post('category', [CategoryController::class, 'create']);
-Route::put('category', [CategoryController::class, 'update']);
-Route::delete('category', [CategoryController::class, 'delete']);
+Route::put('category/{id}', [CategoryController::class, 'update']);
+Route::delete('category/{id}', [CategoryController::class, 'delete']);
 /// END CATEGORY API
 
 /// START [TYPE ORGANIZATION] API
 Route::get('type_organization', [TypeOrganizationController::class, 'get']);
 Route::get('type_organization/{id}', [TypeOrganizationController::class, 'get']);
 Route::post('type_organization', [TypeOrganizationController::class, 'create']);
-Route::put('type_organization', [TypeOrganizationController::class, 'update']);
-Route::delete('type_organization', [TypeOrganizationController::class, 'delete']);
+Route::put('type_organization/{id}', [TypeOrganizationController::class, 'update']);
+Route::delete('type_organization/{id}', [TypeOrganizationController::class, 'delete']);
 /// END [TYPE ORGANIZATION] API
 
 /// START [USER] API
@@ -46,7 +46,7 @@ Route::get('user', [UserController::class, 'get']);
 Route::get('user/{id}', [UserController::class, 'get']);
 Route::post('user', [UserController::class, 'create']);
 Route::post('login', [UserController::class, 'login']);
-Route::put('user', [UserController::class, 'update']);
+Route::put('user/{id}', [UserController::class, 'update']);
 /// END [USER] API
 
 /// START [ORGANIZATION] API
@@ -60,7 +60,7 @@ Route::put('organization', [OrganizationController::class, 'update']);
 Route::get('event', [EventController::class, 'get']);
 Route::get('event/{id}', [EventController::class, 'get']);
 Route::post('event', [EventController::class, 'create']);
-Route::put('event', [EventController::class, 'update']);
+Route::put('event/{id}', [EventController::class, 'update']);
 Route::delete('event', [EventController::class, 'delete']);
 /// END [EVENT] API
 
@@ -68,8 +68,8 @@ Route::delete('event', [EventController::class, 'delete']);
 Route::get('eventCategory', [EventCategoryController::class, 'get']);
 Route::get('eventCategory/{id}', [EventCategoryController::class, 'get']);
 Route::post('eventCategory', [EventCategoryController::class, 'create']);
-Route::put('eventCategory', [EventCategoryController::class, 'update']);
-Route::delete('eventCategory', [EventCategoryController::class, 'delete']);
+Route::put('eventCategory/{id}', [EventCategoryController::class, 'update']);
+Route::delete('eventCategory/{id}', [EventCategoryController::class, 'delete']);
 /// END [EVENT_CATEGORY] API
 
 /// START [EVENT_JOINED] API
@@ -77,5 +77,5 @@ Route::get('eventJoined', [EventJoinedController::class, 'get']);
 Route::get('eventJoined/{id}', [EventJoinedController::class, 'get']);
 Route::post('eventJoined', [EventJoinedController::class, 'create']);
 // Route::put('eventJoined/update', [EventJoinedController::class, 'update']);
-Route::delete('eventJoined', [EventJoinedController::class, 'delete']);
+Route::delete('eventJoined/{id}', [EventJoinedController::class, 'delete']);
 /// END [EVENT_JOINED] API

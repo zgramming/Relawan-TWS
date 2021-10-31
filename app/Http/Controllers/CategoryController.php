@@ -26,7 +26,7 @@ class CategoryController extends Controller
         } catch (QueryException $e) {
             return response()->json(['sql_code' => $e->getSql(), 'message' => $e->getMessage()], 400);
         } catch (\Exception $e) {
-            $code = $e->getCode();
+            $code = $e->getCode() ?: 400;
             $message = $e->getMessage();
             return response()->json(['message' => $message], $code);
         }
@@ -101,11 +101,11 @@ class CategoryController extends Controller
         }
     }
 
-    public function delete()
+    public function delete($id)
     {
         try {
             $request = request();
-            $category = Category::findOrFail($request->id);
+            $category = Category::findOrFail($id);
 
             $category->delete();
 
@@ -122,6 +122,7 @@ class CategoryController extends Controller
         } catch (QueryException $e) {
             return response()->json(['sql_code' => $e->getSql(), 'message' => $e->getMessage()], 400);
         } catch (\Exception $e) {
+
             $code = $e->getCode() ?: 400;
             $message = $e->getMessage();
             return response()->json(['message' => $message], $code);

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\UserPost;
 use App\Models\User;
 use Exception;
 use Illuminate\Database\QueryException;
@@ -88,6 +87,8 @@ class UserController extends Controller
             $user->email  = $request->email;
             $user->password  = Hash::make($request->password);
             $user->type  = $request->type;
+            $user->birth_date = $request->birth_date;
+
 
             $user->save();
 
@@ -112,7 +113,7 @@ class UserController extends Controller
         }
     }
 
-    public function update()
+    public function update($id = 0)
     {
         try {
             $request  = request();
@@ -121,7 +122,7 @@ class UserController extends Controller
                 'birth_date' => 'required|date'
             ]);
 
-            $user = User::findOrFail($request->id);
+            $user = User::findOrFail($id);
             $user->name = $request->name;
             $user->birth_date = $request->birth_date;
 

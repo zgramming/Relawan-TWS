@@ -66,7 +66,7 @@ class TypeOrganizationController extends Controller
         }
     }
 
-    public function update()
+    public function update($id = 0)
     {
         try {
             $request = request();
@@ -76,7 +76,7 @@ class TypeOrganizationController extends Controller
                 'description' => 'required',
             ]);
 
-            $typeOrganization = TypeOrganization::findOrFail($request->id);
+            $typeOrganization = TypeOrganization::findOrFail($id);
 
             $typeOrganization->name = $request->name;
             $typeOrganization->description = $request->description;
@@ -100,11 +100,10 @@ class TypeOrganizationController extends Controller
         }
     }
 
-    public function delete()
+    public function delete($id = 0)
     {
         try {
-            $request = request();
-            $typeOrganization = TypeOrganization::findOrFail($request->id);
+            $typeOrganization = TypeOrganization::findOrFail($id);
 
             $typeOrganization->delete();
 

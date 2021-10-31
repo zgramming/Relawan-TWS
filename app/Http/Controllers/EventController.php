@@ -88,11 +88,10 @@ class EventController extends Controller
         }
     }
 
-    public function update()
+    public function update($id = 0)
     {
         try {
             $request = request();
-            $request->merge(['_method' => 'PUT']);
 
             $request->validate([
                 'id_organization' => 'required|integer',
@@ -107,7 +106,7 @@ class EventController extends Controller
                 'image' => 'required',
             ]);
 
-            $event = Event::findOrFail($request->id);
+            $event = Event::findOrFail($id);
             $event->id_organization = $request->id_organization;
             $event->title = $request->title;
             $event->description = $request->description;
