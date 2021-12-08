@@ -21,6 +21,8 @@ class CreateEvent extends Migration
             $table->date('start_date');
             $table->date('end_date');
             $table->text('location');
+            $table->double('latitude');
+            $table->double('longitude');
             $table->enum('type', ['online', 'offline']);
             $table->integer('quota');
             $table->boolean('is_unlimited');

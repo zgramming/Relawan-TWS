@@ -56,6 +56,8 @@ class EventController extends Controller
             $event->start_date = $request->start_date;
             $event->end_date = $request->end_date;
             $event->location = $request->location;
+            $event->latitude = $request->latitude;
+            $event->longitude = $request->longitude;
             $event->type = $request->type;
             $event->quota = $request->quota;
             $event->is_unlimited = $request->is_unlimited;
@@ -113,6 +115,8 @@ class EventController extends Controller
             $event->start_date = $request->start_date;
             $event->end_date = $request->end_date;
             $event->location = $request->location;
+            $event->latitude = $request->latitude;
+            $event->longitude = $request->longitude;
             $event->type = $request->type;
             $event->quota = $request->quota;
             $event->is_unlimited = $request->is_unlimited;
