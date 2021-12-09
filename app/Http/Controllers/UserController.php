@@ -59,7 +59,7 @@ class UserController extends Controller
             return response()->json(['message' => 'Login Success', 'data' => $user], 200);
         } catch (ValidationException $e) {
             /// Get first error with [current] function
-            return response()->json(['error' => current($e->errors())], 400);
+            return response()->json(['validation_error' => $e->errors()], 400);
         } catch (QueryException $e) {
             return response()->json(['sql_code' => $e->getSql(), 'message' => $e->getMessage()], 400);
         } catch (\Exception $e) {
@@ -100,7 +100,7 @@ class UserController extends Controller
         } catch (ValidationException $e) {
             DB::rollBack();
             /// Get first error with [current] function
-            return response()->json(['error' => current($e->errors())], 400);
+            return response()->json(['validation_error' => $e->errors()], 400);
         } catch (QueryException $e) {
             DB::rollBack();
             return response()->json(['sql_code' => $e->getSql(), 'message' => $e->getMessage()], 400);
@@ -130,7 +130,7 @@ class UserController extends Controller
             return response()->json(['message' => 'Update Success', 'data' => $user], 200);
         } catch (ValidationException $e) {
             /// Get first error with [current] function
-            return response()->json(['error' => current($e->errors())], 400);
+            return response()->json(['validation_error' => $e->errors()], 400);
         } catch (QueryException $e) {
             return response()->json(['sql_code' => $e->getSql(), 'message' => $e->getMessage()], 400);
         } catch (\Exception $e) {
@@ -157,7 +157,7 @@ class UserController extends Controller
             );
         } catch (ValidationException $e) {
             /// Get first error with [current] function
-            return response()->json(['error' => current($e->errors())], 400);
+            return response()->json(['validation_error' => $e->errors()], 400);
         } catch (QueryException $e) {
             return response()->json(['sql_code' => $e->getSql(), 'message' => $e->getMessage()], 400);
         } catch (\Exception $e) {
