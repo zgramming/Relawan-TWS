@@ -18,8 +18,8 @@ class CreateEvent extends Migration
             $table->integer('id_organization');
             $table->string('title');
             $table->text('description');
-            $table->date('start_date');
-            $table->date('end_date');
+            $table->dateTime('start_date');
+            $table->dateTime('end_date');
             $table->text('location');
             $table->double('latitude');
             $table->double('longitude');
