@@ -7,6 +7,7 @@ use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Intervention\Image\ImageManagerStatic as Image;
 
@@ -41,13 +42,16 @@ class OrganizationController extends Controller
         try {
 
             $request = request();
-            $request->validate([
+
+            $validator = Validator::make($request->all(), [
                 'id_type_organization' => 'required|integer',
                 'name' => 'required',
                 'date_establishment' => 'required|date',
                 'address' => 'required'
             ]);
 
+            if ($validator->fails()) {
+            }
 
             $organization = new Organization();
             $organization->id_user = $idUser;
@@ -78,7 +82,7 @@ class OrganizationController extends Controller
         } catch (ValidationException $e) {
             /// Get first error with [current] function
             // return response()->json(['error' => current($e->errors())], 400);
-            throw new Exception(current($e->errors())[0], 400);
+            throw new Exception(current($e->errors()), 400);
         } catch (QueryException $e) {
             // return response()->json(['sql_code' => $e->getSql(), 'message' => $e->getMessage()], 400);
             throw new Exception($e->getSql(), 400);

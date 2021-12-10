@@ -22,7 +22,7 @@ class EventController extends Controller
             return response()->json(['message' => 'Success get', 'data' => $result]);
         } catch (ValidationException $e) {
             /// Get first error with [current] function
-            return response()->json(['error' => current($e->errors())], 400);
+            return response()->json(['validation_error' => $e->errors()], 400);
         } catch (QueryException $e) {
             return response()->json(['sql_code' => $e->getSql(), 'message' => $e->getMessage()], 400);
         } catch (\Exception $e) {
@@ -38,19 +38,19 @@ class EventController extends Controller
             $request = request();
             $request->validate([
                 'id_organization' => 'required|integer',
+                'id_category' => 'required|integer',
                 'title' => 'required',
                 'description' => 'required',
                 'start_date' => 'required|date',
                 'end_date' => 'required|date',
                 'location' => 'required',
                 'type' => 'required',
-                'quota' => 'required|integer',
-                'is_unlimited' => 'required',
-                'image' => 'required'
+                'quota' => 'required|integer'
             ]);
 
             $event = new Event();
             $event->id_organization = $request->id_organization;
+            $event->id_category = $request->id_category;
             $event->title = $request->title;
             $event->description = $request->description;
             $event->start_date = $request->start_date;
@@ -60,27 +60,35 @@ class EventController extends Controller
             $event->longitude = $request->longitude;
             $event->type = $request->type;
             $event->quota = $request->quota;
-            $event->is_unlimited = $request->is_unlimited;
 
-            if ($request->hasFile('image')) {
-                $image = $request->file('image');
-                $filename = uniqid() . "." . $image->getClientOriginalExtension();
-                $path = public_path() . '/event/image/';
+            if (!empty($request->image)) {
+                $request->validate([
+                    'image' => 'image'
+                ]);
 
-                if (!File::exists($path)) {
-                    File::makeDirectory($path, 0777, true);
+                if ($request->hasFile('image')) {
+                    $image = $request->file('image');
+                    $filename = uniqid() . "." . $image->getClientOriginalExtension();
+                    $path = public_path() . '/event/image/';
+
+                    if (!File::exists($path)) {
+                        File::makeDirectory($path, 0777, true);
+                    }
+
+                    Image::make($image)->resize(1000, 1000)->save($path . $filename);
+                    $event->image = $filename;
                 }
-
-                Image::make($image)->resize(400, 400)->save($path . $filename);
-                $event->image = $filename;
             }
 
+
             $event->save();
+
+            $event = Event::find($event->id);
 
             return response()->json(['message' => 'success create', 'data' => $event], 201);
         } catch (ValidationException $e) {
             /// Get first error with [current] function
-            return response()->json(['error' => current($e->errors())], 400);
+            return response()->json(['validation_error' => $e->errors()], 400);
         } catch (QueryException $e) {
             return response()->json(['sql_code' => $e->getSql(), 'message' => $e->getMessage()], 400);
         } catch (\Exception $e) {
@@ -97,6 +105,7 @@ class EventController extends Controller
 
             $request->validate([
                 'id_organization' => 'required|integer',
+                'id_category' => 'required|integer',
                 'title' => 'required',
                 'description' => 'required',
                 'start_date' => 'required|date',
@@ -104,7 +113,6 @@ class EventController extends Controller
                 'location' => 'required',
                 'type' => 'required',
                 'quota' => 'required|integer',
-                'is_unlimited' => 'required',
                 'image' => 'required',
             ]);
 
@@ -119,7 +127,6 @@ class EventController extends Controller
             $event->longitude = $request->longitude;
             $event->type = $request->type;
             $event->quota = $request->quota;
-            $event->is_unlimited = $request->is_unlimited;
 
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
@@ -139,7 +146,7 @@ class EventController extends Controller
             return response()->json(['message' => 'success update', 'data' => $event], 201);
         } catch (ValidationException $e) {
             /// Get first error with [current] function
-            return response()->json(['error' => current($e->errors())], 400);
+            return response()->json(['validation_error' => $e->errors()], 400);
         } catch (QueryException $e) {
             return response()->json(['sql_code' => $e->getSql(), 'message' => $e->getMessage()], 400);
         } catch (\Exception $e) {
@@ -149,7 +156,18 @@ class EventController extends Controller
         }
     }
 
-    public function delete()
+    public function delete($id = 0)
     {
+        try {
+            $event = Event::findOrFail($id);
+            $event->delete();
+            return response()->json(['message' => 'Berhasil menghapus event'], 200);
+        } catch (QueryException $e) {
+            return response()->json(['sql_code' => $e->getSql(), 'message' => $e->getMessage()], 400);
+        } catch (\Exception $e) {
+            $code = $e->getCode() ?: 400;
+            $message = $e->getMessage();
+            return response()->json(['message' => $message], $code);
+        }
     }
 }

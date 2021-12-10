@@ -21,7 +21,7 @@ class TypeOrganizationController extends Controller
             return response()->json(['message' => 'Success Get Data', 'data' => $result], 200);
         } catch (ValidationException $e) {
             /// Get first error with [current] function
-            return response()->json(['error' => current($e->errors())], 400);
+            return response()->json(['validation_error' => $e->errors()], 400);
         } catch (QueryException $e) {
             return response()->json(['sql_code' => $e->getSql(), 'message' => $e->getMessage()], 400);
         } catch (\Exception $e) {
@@ -56,7 +56,7 @@ class TypeOrganizationController extends Controller
             );
         } catch (ValidationException $e) {
             /// Get first error with [current] function
-            return response()->json(['error' => current($e->errors())], 400);
+            return response()->json(['validation_error' => $e->errors()], 400);
         } catch (QueryException $e) {
             return response()->json(['sql_code' => $e->getSql(), 'message' => $e->getMessage()], 400);
         } catch (\Exception $e) {
@@ -90,7 +90,7 @@ class TypeOrganizationController extends Controller
             );
         } catch (ValidationException $e) {
             /// Get first error with [current] function
-            return response()->json(['error' => current($e->errors())], 400);
+            return response()->json(['validation_error' => $e->errors()], 400);
         } catch (QueryException $e) {
             return response()->json(['sql_code' => $e->getSql(), 'message' => $e->getMessage()], 400);
         } catch (\Exception $e) {
@@ -116,7 +116,7 @@ class TypeOrganizationController extends Controller
             );
         } catch (ValidationException $e) {
             /// Get first error with [current] function
-            return response()->json(['error' => current($e->errors())], 400);
+            return response()->json(['validation_error' => $e->errors()], 400);
         } catch (QueryException $e) {
             return response()->json(['sql_code' => $e->getSql(), 'message' => $e->getMessage()], 400);
         } catch (\Exception $e) {

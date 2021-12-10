@@ -16,6 +16,7 @@ class CreateEvent extends Migration
         Schema::create('event', function (Blueprint $table) {
             $table->id();
             $table->integer('id_organization');
+            $table->integer('id_category');
             $table->string('title');
             $table->text('description');
             $table->dateTime('start_date');
@@ -25,7 +26,6 @@ class CreateEvent extends Migration
             $table->double('longitude');
             $table->enum('type', ['online', 'offline']);
             $table->integer('quota');
-            $table->boolean('is_unlimited');
             $table->text('image');
             $table->timestamps();
         });

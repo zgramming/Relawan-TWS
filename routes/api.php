@@ -62,7 +62,7 @@ Route::get('event', [EventController::class, 'get']);
 Route::get('event/{id}', [EventController::class, 'get']);
 Route::post('event', [EventController::class, 'create']);
 Route::put('event/{id}', [EventController::class, 'update']);
-Route::delete('event', [EventController::class, 'delete']);
+Route::delete('event/{id}', [EventController::class, 'delete']);
 /// END [EVENT] API
 
 /// START [EVENT_CATEGORY] API

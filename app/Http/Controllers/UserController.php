@@ -5,18 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Exception;
 use Illuminate\Database\QueryException;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
-    protected $organizationController;
-
-    public function __construct(OrganizationController $organizationController)
-    {
-        $this->organizationController = $organizationController;
-    }
 
     public function get($id = 0)
     {
@@ -71,41 +64,46 @@ class UserController extends Controller
 
     public function create()
     {
-        DB::beginTransaction();
         try {
+
             $request = request();
-            $request->validate(
-                [
-                    'name' => 'required',
-                    'email' => 'required|email|unique:users,email',
-                    'password' => 'required',
-                    'type' => 'required'
-                ]
-            );
+
+            $rules = [
+                'name' => 'required',
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required|confirmed',
+                'type' => 'required'
+            ];
+
+            if ($request->type == "organisasi") {
+                $rules['id_type_organization'] = "required|integer";
+                $rules['address'] = "required";
+            }
+
+            $request->validate($rules);
+
             $user = new User();
             $user->name  = $request->name;
             $user->email  = $request->email;
             $user->password  = Hash::make($request->password);
             $user->type  = $request->type;
-            $user->birth_date = $request->birth_date;
             $user->picture_profile = $request->picture_profile;
+
+            if ($request->type == "organisasi") {
+                $user->id_type_organization = $request->id_type_organization;
+                $user->address = $request->address;
+            }
             $user->save();
 
-            if ($request->type == 'organization') {
-                $this->organizationController->create($user->id);
-            }
+            $user = User::find($user->id);
 
-            DB::commit();
             return response()->json(['message' => 'Create Success', 'data' => $user]);
         } catch (ValidationException $e) {
-            DB::rollBack();
             /// Get first error with [current] function
             return response()->json(['validation_error' => $e->errors()], 400);
         } catch (QueryException $e) {
-            DB::rollBack();
             return response()->json(['sql_code' => $e->getSql(), 'message' => $e->getMessage()], 400);
         } catch (\Exception $e) {
-            DB::rollBack();
             $code = $e->getCode();
             $message = $e->getMessage();
             return response()->json(['message' => $message], $code);
