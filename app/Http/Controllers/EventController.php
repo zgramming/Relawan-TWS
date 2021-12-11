@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Event;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Validation\ValidationException;
 use Intervention\Image\ImageManagerStatic as Image;
@@ -16,13 +17,77 @@ class EventController extends Controller
             if (empty($id)) {
                 $result = Event::all();
             } else {
-                $result = Event::findOrFail($id);
+                $result = DB::table(TABLE_EVENT)
+                    ->get();
             }
 
             return response()->json(['message' => 'Success get', 'data' => $result]);
-        } catch (ValidationException $e) {
-            /// Get first error with [current] function
-            return response()->json(['validation_error' => $e->errors()], 400);
+        } catch (QueryException $e) {
+            return response()->json(['sql_code' => $e->getSql(), 'message' => $e->getMessage()], 400);
+        } catch (\Exception $e) {
+            $code = $e->getCode() ?: 400;
+            $message = $e->getMessage();
+            return response()->json(['message' => $message], $code);
+        }
+    }
+
+    public function nearestDate()
+    {
+        try {
+            $result = DB::table(TABLE_EVENT . " AS t1")
+                ->select(
+                    [
+                        't1.id',
+                        't1.title',
+                        't1.start_date',
+                        't1.end_date',
+                        't1.type',
+                        't1.quota',
+                        't1.image',
+                        "t2.name as nama_category",
+                        "t3.name as nama_organisasi"
+                    ]
+                )
+                ->join(TABLE_CATEGORY . " AS t2", "t1.id_category", "=", "t2.id")
+                ->join(TABLE_USERS . " AS t3", "t1.id_organization", "=", "t3.id")
+                ->where("t1.start_date", ">=", date('Y-m-d H:i:s'))
+                ->orderBy('t1.start_date')
+                ->limit(5)
+                ->get();
+            return response()->json(['message' => 'Success get', 'data' => $result]);
+        } catch (QueryException $e) {
+            return response()->json(['sql_code' => $e->getSql(), 'message' => $e->getMessage()], 400);
+        } catch (\Exception $e) {
+            $code = $e->getCode() ?: 400;
+            $message = $e->getMessage();
+            return response()->json(['message' => $message], $code);
+        }
+    }
+
+    public function forYou()
+    {
+        try {
+            $result = DB::table(TABLE_EVENT . " AS t1")
+                ->select(
+                    [
+                        't1.id',
+                        't1.title',
+                        't1.start_date',
+                        't1.end_date',
+                        't1.type',
+                        't1.quota',
+                        't1.image',
+                        "t2.name as nama_category",
+                        "t3.name as nama_organisasi"
+                    ]
+                )
+                ->join(TABLE_CATEGORY . " AS t2", "t1.id_category", "=", "t2.id")
+                ->join(TABLE_USERS . " AS t3", "t1.id_organization", "=", "t3.id")
+                ->where("t1.start_date", ">=", date('Y-m-d H:i:s'))
+                ->orderBy('t1.start_date')
+                ->get();
+
+            return response()->json(['message' => 'Success get', 'data' => $result]);
         } catch (QueryException $e) {
             return response()->json(['sql_code' => $e->getSql(), 'message' => $e->getMessage()], 400);
         } catch (\Exception $e) {
