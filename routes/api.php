@@ -61,7 +61,7 @@ Route::put('organization', [OrganizationController::class, 'update']);
 Route::get('event', [EventController::class, 'get']);
 Route::get('event/nearestDate', [EventController::class, 'nearestDate']);
 Route::get('event/forYou', [EventController::class, 'forYou']);
-Route::get('event/{id}', [EventController::class, 'get']);
+Route::get('event/{idEvent}/user/{idUser}', [EventController::class, 'get']);
 Route::post('event', [EventController::class, 'create']);
 Route::put('event/{id}', [EventController::class, 'update']);
 Route::delete('event/{id}', [EventController::class, 'delete']);

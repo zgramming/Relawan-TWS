@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Http\Traits\EventJoinedTrait;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
@@ -12,7 +13,9 @@ use Intervention\Image\ImageManagerStatic as Image;
 
 class EventController extends Controller
 {
-    public function get($idEvent = 0)
+    use EventJoinedTrait;
+
+    public function get($idEvent = 0, $idUser = 0)
     {
 
         try {
@@ -20,8 +23,9 @@ class EventController extends Controller
                 $result = Event::all();
             } else {
 
-                $joinedEvent =  $this->joinedEvent($idEvent);
-                $totalJoined = $this->totalJoinedEvent($idEvent);
+                $joinedEvent =  $this->getJoinedEvent($idEvent);
+                $totalJoined = $this->getTotalJoinedEvent($idEvent);
+                $isAlreadyJoin = $this->isUserAlreadyJoinEvent($idUser, $idEvent);
 
                 $result = DB::table(TABLE_EVENT . " as t1")
                     ->select(
@@ -51,6 +55,7 @@ class EventController extends Controller
 
                 $result->total_joined_event = $totalJoined;
                 $result->joined_event = $joinedEvent;
+                $result->is_already_join_event = $isAlreadyJoin;
             }
 
             return response()->json(['message' => 'Success get', 'data' => $result]);
@@ -126,54 +131,6 @@ class EventController extends Controller
             $code = $e->getCode() ?: 400;
             $message = $e->getMessage();
             return response()->json(['message' => $message], $code);
-        }
-    }
-
-    private function joinedEvent($idEvent = 0)
-    {
-        try {
-            $result = DB::table(TABLE_EVENT_JOINED . " AS t1")
-                ->select(
-                    [
-                        "t1.id",
-                        "t1.joined_date",
-                        "t2.name as nama_relawan",
-                        "t2.email as email_relawan",
-                        "t2.picture_profile as profile_relawan"
-                    ]
-                )
-                ->join(TABLE_USERS . " AS t2", "t1.id_user", "=", "t2.id")
-                ->where("t1.id_event", "=", $idEvent)
-                ->limit(10)
-                ->get()
-                ->toArray();
-
-            return $result;
-        } catch (\Exception $e) {
-            throw $e;
-        }
-    }
-
-    private function totalJoinedEvent($idEvent = 0): int
-    {
-        try {
-            $result = DB::table(TABLE_EVENT_JOINED . " AS t1")
-                ->select(
-                    [
-                        "t1.id",
-                        "t1.joined_date",
-                        "t2.name as nama_relawan",
-                        "t2.email as email_relawan",
-                        "t2.picture_profile as profile_relawan"
-                    ]
-                )
-                ->join(TABLE_USERS . " AS t2", "t1.id_user", "=", "t2.id")
-                ->where("t1.id_event", "=", $idEvent)
-                ->count('t1.id');
-
-            return $result;
-        } catch (\Exception $e) {
-            throw $e;
         }
     }
 
