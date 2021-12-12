@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Exception;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class UserController extends Controller
 {
@@ -114,16 +116,56 @@ class UserController extends Controller
     {
         try {
             $request  = request();
+
             $request->validate([
                 'name' => 'required',
-                'birth_date' => 'required|date'
             ]);
 
             $user = User::findOrFail($id);
             $user->name = $request->name;
-            $user->birth_date = $request->birth_date;
+
+            if ($user->type == "relawan") {
+                ///? Relawan
+                $user->birth_date = $request->birth_date;
+                $user->phone = $request->phone;
+
+                if ($request->hasFile('picture_profile')) {
+                    $image = $request->file('picture_profile');
+                    $filename = ($user->picture_profile == null || empty($user->picture_profile)) ? uniqid() . "." . $image->getClientOriginalExtension() : $user->picture_profile;
+                    $path = public_path() . '/user/image/';
+
+                    if (!File::exists($path)) {
+                        File::makeDirectory($path, 0777, true);
+                    }
+
+                    Image::make($image)->resize(1000, 1000)->save($path . $filename);
+                    $user->picture_profile = $filename;
+                }
+            } else {
+                ///? Organisasi
+                $user->address = $request->address;
+                $user->website = $request->website;
+                $user->whatsapp_contact = $request->whatsapp_contact;
+                $user->email_contact = $request->email_contact;
+                $user->instagram_contact = $request->instagram_contact;
+
+                if ($request->hasFile('logo')) {
+                    $image = $request->file('logo');
+                    $filename = ($user->logo == null || empty($user->logo)) ? uniqid() . "." . $image->getClientOriginalExtension() : $user->logo;
+                    $path = public_path() . '/user/image/';
+
+                    if (!File::exists($path)) {
+                        File::makeDirectory($path, 0777, true);
+                    }
+
+                    Image::make($image)->resize(1000, 1000)->save($path . $filename);
+                    $user->logo = $filename;
+                }
+            }
 
             $user->update();
+
+            $user = User::find($user->id);
 
             return response()->json(['message' => 'Update Success', 'data' => $user], 200);
         } catch (ValidationException $e) {
@@ -163,5 +205,13 @@ class UserController extends Controller
             $message = $e->getMessage();
             return response()->json(['message' => $message], $code);
         }
+    }
+
+    private function updateOrganisasi()
+    {
+    }
+
+    private function updateRelawan()
+    {
     }
 }
