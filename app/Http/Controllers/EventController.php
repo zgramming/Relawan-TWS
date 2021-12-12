@@ -33,6 +33,10 @@ class EventController extends Controller
                             't1.title',
                             't1.type',
                             't1.description',
+                            't1.start_date',
+                            't1.end_date',
+                            't1.location',
+                            't1.quota',
                             't1.image',
                             't1.updated_at',
                             't2.name as nama_category',
@@ -146,7 +150,9 @@ class EventController extends Controller
                 'end_date' => 'required|date',
                 'location' => 'required',
                 'type' => 'required',
-                'quota' => 'required|integer'
+                'quota' => 'required|integer',
+                'image' => 'image'
+
             ]);
 
             $event = new Event();
@@ -162,28 +168,20 @@ class EventController extends Controller
             $event->type = $request->type;
             $event->quota = $request->quota;
 
-            if (!empty($request->image)) {
-                $request->validate([
-                    'image' => 'image'
-                ]);
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $filename = uniqid() . "." . $image->getClientOriginalExtension();
+                $path = public_path() . '/event/image/';
 
-                if ($request->hasFile('image')) {
-                    $image = $request->file('image');
-                    $filename = uniqid() . "." . $image->getClientOriginalExtension();
-                    $path = public_path() . '/event/image/';
-
-                    if (!File::exists($path)) {
-                        File::makeDirectory($path, 0777, true);
-                    }
-
-                    Image::make($image)->resize(1000, 1000)->save($path . $filename);
-                    $event->image = $filename;
+                if (!File::exists($path)) {
+                    File::makeDirectory($path, 0777, true);
                 }
+
+                Image::make($image)->resize(1000, 1000)->save($path . $filename);
+                $event->image = $filename;
             }
 
-
             $event->save();
-
             $event = Event::find($event->id);
 
             return response()->json(['message' => 'success create', 'data' => $event], 201);
