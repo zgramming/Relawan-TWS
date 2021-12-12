@@ -17,15 +17,14 @@ class EventController extends Controller
 
     public function get($idEvent = 0, $idUser = 0)
     {
-
         try {
             if (empty($idEvent)) {
                 $result = Event::all();
             } else {
 
-                $joinedEvent =  $this->getJoinedEvent($idEvent);
+                $joinedEvent = $this->getJoinedEvent($idEvent);
                 $totalJoined = $this->getTotalJoinedEvent($idEvent);
-                $isAlreadyJoin = $this->isUserAlreadyJoinEvent($idUser, $idEvent);
+                $isAlreadyJoin = $this->isUserAlreadyJoinEvent($idUser, $idEvent) ?? false;
 
                 $result = DB::table(TABLE_EVENT . " as t1")
                     ->select(
@@ -55,7 +54,7 @@ class EventController extends Controller
 
                 $result->total_joined_event = $totalJoined;
                 $result->joined_event = $joinedEvent;
-                $result->is_already_join_event = $isAlreadyJoin;
+                $result->is_already_join_event = (!$isAlreadyJoin) ? false : true;
             }
 
             return response()->json(['message' => 'Success get', 'data' => $result]);

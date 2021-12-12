@@ -18,6 +18,8 @@ class CreateEventJoined extends Migration
             $table->integer('id_user');
             $table->integer('id_event');
             $table->date('joined_date');
+            $table->date('cancel_date');
+            $table->enum('status', ['join', 'cancel', 'none']);
             $table->timestamps();
         });
     }

@@ -26,6 +26,7 @@ trait EventJoinedTrait
                 )
                 ->join(TABLE_USERS . " AS t2", "t1.id_user", "=", "t2.id")
                 ->where("t1.id_event", "=", $idEvent)
+                ->where('t1.status', "=", "join")
                 ->count('t1.id');
 
             return $result;
@@ -38,17 +39,18 @@ trait EventJoinedTrait
      * @param int $idUser
      * @param int $idEvent
      *
-     * @return bool
+     * @return object|null
      */
-    public function isUserAlreadyJoinEvent(int $idUser = 0, int $idEvent = 0): bool
+    public function isUserAlreadyJoinEvent(int $idUser = 0, int $idEvent = 0): ?object
     {
         try {
-            $isAlreadyJoin = DB::table(TABLE_EVENT_JOINED)
+            $obj = DB::table(TABLE_EVENT_JOINED)
                 ->where("id_user", "=", $idUser)
                 ->where("id_event", "=", $idEvent)
-                ->count() > 0;
+                ->where('status', "=", "join")
+                ->first();
 
-            return $isAlreadyJoin;
+            return $obj;
         } catch (\Exception $e) {
             throw $e;
         }
@@ -75,6 +77,7 @@ trait EventJoinedTrait
                 )
                 ->join(TABLE_USERS . " AS t2", "t1.id_user", "=", "t2.id")
                 ->where("t1.id_event", "=", $idEvent)
+                ->where('t1.status', "=", "join")
                 ->limit(10)
                 ->get()
                 ->toArray();

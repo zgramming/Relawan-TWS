@@ -2,34 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Traits\EventJoinedTrait;
+
 use App\Models\EventJoined;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class EventJoinedController extends Controller
 {
-    public function get($id = 0)
-    {
-        try {
-            if (empty($id)) {
-                $result = EventJoined::all();
-            } else {
-                $result = EventJoined::findOrFail($id);
-            }
-
-            return response()->json(['message' => 'Success get', 'data' => $result]);
-        } catch (ValidationException $e) {
-            /// Get first error with [current] function
-            return response()->json(['error' => current($e->errors())], 400);
-        } catch (QueryException $e) {
-            return response()->json(['sql_code' => $e->getSql(), 'message' => $e->getMessage()], 400);
-        } catch (\Exception $e) {
-            $code = $e->getCode() ?: 400;
-            $message = $e->getMessage();
-            return response()->json(['message' => $message], $code);
-        }
-    }
+    use EventJoinedTrait;
 
     public function create()
     {
@@ -38,20 +21,39 @@ class EventJoinedController extends Controller
             $request->validate([
                 'id_event' => 'required|integer',
                 'id_user' => 'required|integer',
-                'joined_date' => 'date|required'
             ]);
 
-            $event = new EventJoined();
-            $event->id_event = $request->id_event;
-            $event->id_user = $request->id_user;
-            $event->joined_date = $request->joined_date;
+            $isAlreadyJoinEvent = $this->isUserAlreadyJoinEvent($request->id_user, $request->id_event) ?? false;
 
-            $event->save();
+            $attributes = [
+                'id_event' => $request->id_event,
+                'id_user' => $request->id_user,
+            ];
 
-            return response()->json(['message' => 'success create', 'data' => $event], 201);
+            $values = [
+                'id_event' => $request->id_event,
+                'id_user' => $request->id_user,
+            ];
+
+            /// If user already join, then call it API again
+            /// Then we should change status to cancel, it means user cancel join the event
+
+            if ($isAlreadyJoinEvent) {
+                $values['status'] = "cancel";
+                $values['cancel_date'] = date('Y-m-d H:i:s');
+                $message = "Berhasil membatalkan ikut event";
+            } else {
+                $values['status'] = "join";
+                $values['joined_date'] = date('Y-m-d H:i:s');
+                $message = "Berhasil mengikuti event";
+            }
+
+            DB::table(TABLE_EVENT_JOINED)->updateOrInsert($attributes, $values);
+
+            return response()->json(['message' => $message], 201);
         } catch (ValidationException $e) {
             /// Get first error with [current] function
-            return response()->json(['error' => current($e->errors())], 400);
+            return response()->json(['validation_error' => $e->errors()], 400);
         } catch (QueryException $e) {
             return response()->json(['sql_code' => $e->getSql(), 'message' => $e->getMessage()], 400);
         } catch (\Exception $e) {
