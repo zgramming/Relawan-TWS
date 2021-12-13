@@ -46,6 +46,7 @@ Route::get('user', [UserController::class, 'get']);
 Route::get('user/{id}', [UserController::class, 'get']);
 Route::post('user', [UserController::class, 'create']);
 Route::post('login', [UserController::class, 'login']);
+Route::post('change_password', [UserController::class, 'changePassword']);
 Route::put('user/{id}', [UserController::class, 'update']);
 Route::delete('user/{id}', [UserController::class, 'delete']);
 /// END [USER] API

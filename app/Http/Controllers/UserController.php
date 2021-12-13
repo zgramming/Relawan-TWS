@@ -207,11 +207,44 @@ class UserController extends Controller
         }
     }
 
-    private function updateOrganisasi()
+    public function changePassword()
     {
-    }
+        try {
+            $request = request();
 
-    private function updateRelawan()
-    {
+            $request->validate([
+                'id_user' => 'required|integer',
+                'old_password' => 'required',
+                'new_password' => 'required|confirmed',
+            ]);
+
+            $user = User::find($request->id_user);
+
+            $isValidPassword = Hash::check($request->old_password, $user->password);
+            if (!$isValidPassword) {
+                throw new Exception('Password lama tidak sama dengan yang sebelumnya', 400);
+            }
+
+            $isNewPasswordEqualOldPassword = $request->old_password == $request->new_password;
+
+            if ($isNewPasswordEqualOldPassword) {
+                throw new Exception('Password baru tidak boleh sama dengan password lama', 400);
+            }
+
+            $user->password = Hash::make($request->new_password);
+            $user->update();
+
+            $user = User::find($user->id);
+            return response()->json(['message' => 'Ubah password berhasil', 'data' => $user], 200);
+        } catch (ValidationException $e) {
+            /// Get first error with [current] function
+            return response()->json(['validation_error' => $e->errors()], 400);
+        } catch (QueryException $e) {
+            return response()->json(['sql_code' => $e->getSql(), 'message' => $e->getMessage()], 400);
+        } catch (\Exception $e) {
+            $code = $e->getCode() ?: 400;
+            $message = $e->getMessage();
+            return response()->json(['message' => $message], $code);
+        }
     }
 }
