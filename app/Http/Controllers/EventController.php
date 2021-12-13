@@ -123,7 +123,7 @@ class EventController extends Controller
                 )
                 ->join(TABLE_CATEGORY . " AS t2", "t1.id_category", "=", "t2.id")
                 ->join(TABLE_USERS . " AS t3", "t1.id_organization", "=", "t3.id")
-                ->where("t1.start_date", ">=", date('Y-m-d H:i:s'))
+                // ->where("t1.start_date", ">=", date('Y-m-d H:i:s'))
                 ->orderBy('t1.start_date')
                 ->get();
 
