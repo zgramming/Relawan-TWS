@@ -14,6 +14,12 @@ class EventJoinedController extends Controller
 {
     use EventJoinedTrait;
 
+    // public function testing()
+    // {
+    //     $result =   $this->getUserJoinedEvent(63, 2021, 12);
+    //     var_dump($result);
+    // }
+
     public function create()
     {
         try {

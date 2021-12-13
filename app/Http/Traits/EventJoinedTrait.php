@@ -4,6 +4,8 @@ namespace App\Http\Traits;
 
 use Illuminate\Support\Facades\DB;
 
+use Illuminate\Support\Str;
+
 trait EventJoinedTrait
 {
     /**
@@ -86,5 +88,45 @@ trait EventJoinedTrait
         } catch (\Exception $e) {
             throw $e;
         }
+    }
+
+    public function getUserJoinedEvent(int $idUser, int $year, int $month)
+    {
+
+        try {
+            $query = DB::table(TABLE_EVENT_JOINED . " as t1")
+                ->select([
+                    't2.id',
+                    't2.title',
+                    't2.start_date',
+                    't2.end_date',
+                    't2.type',
+                    't2.quota',
+                    't2.image',
+                    "t3.name as nama_organisasi",
+                    "t4.name as nama_category",
+                ])
+                ->join(TABLE_EVENT . " AS t2", "t1.id_event", "=", "t2.id")
+                ->join(TABLE_USERS . " AS t3", "t1.id_user", "=", "t3.id")
+                ->join(TABLE_CATEGORY . " AS t4", "t2.id_category", "=", "t4.id")
+                ->where('t1.id_user', '=', $idUser)
+                ->where('t1.status', "=", "join")
+                ->whereRaw("YEAR(t2.start_date) = ?", [$year])
+                ->whereRaw("MONTH(t2.start_date) = ?", [$month]);
+
+
+            return $query->get()->toArray();
+        } catch (\Exception $e) {
+            throw $e;
+        }
+    }
+
+
+    public function debugSQL($query): string
+    {
+        $sql = $query->toSql();
+        $binding = $query->getBindings();
+        $sqlWithBinding = Str::replaceArray('?', $binding, $sql);
+        return $sqlWithBinding;
     }
 }

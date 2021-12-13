@@ -62,7 +62,10 @@ Route::put('organization', [OrganizationController::class, 'update']);
 Route::get('event', [EventController::class, 'get']);
 Route::get('event/nearestDate', [EventController::class, 'nearestDate']);
 Route::get('event/forYou', [EventController::class, 'forYou']);
+Route::get('event/myEvent/user/{idUser}/year/{year}/month/{month}', [EventController::class, 'myEvent']);
+
 Route::get('event/{idEvent}/user/{idUser}', [EventController::class, 'get']);
+
 Route::post('event', [EventController::class, 'create']);
 Route::put('event/{id}', [EventController::class, 'update']);
 Route::delete('event/{id}', [EventController::class, 'delete']);
@@ -77,6 +80,7 @@ Route::delete('eventCategory/{id}', [EventCategoryController::class, 'delete']);
 /// END [EVENT_CATEGORY] API
 
 /// START [EVENT_JOINED] API
+Route::get('eventJoined/testing', [EventJoinedController::class, 'testing']);
 Route::get('eventJoined', [EventJoinedController::class, 'get']);
 Route::get('eventJoined/{id}', [EventJoinedController::class, 'get']);
 Route::post('eventJoined', [EventJoinedController::class, 'create']);

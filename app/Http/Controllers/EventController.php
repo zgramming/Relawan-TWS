@@ -137,6 +137,20 @@ class EventController extends Controller
         }
     }
 
+    public function myEvent(int $idUser, int $year, int $month)
+    {
+        try {
+            $result  = $this->getUserJoinedEvent($idUser, $year, $month);
+            return response()->json(['message' => 'Success get', 'data' => $result]);
+        } catch (QueryException $e) {
+            return response()->json(['sql_code' => $e->getSql(), 'message' => $e->getMessage()], 400);
+        } catch (\Exception $e) {
+            $code = $e->getCode() ?: 400;
+            $message = $e->getMessage();
+            return response()->json(['message' => $message], $code);
+        }
+    }
+
     public function create()
     {
         try {
