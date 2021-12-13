@@ -26,7 +26,7 @@ class EventController extends Controller
                 $totalJoined = $this->getTotalJoinedEvent($idEvent);
                 $isAlreadyJoin = $this->isUserAlreadyJoinEvent($idUser, $idEvent) ?? false;
 
-                $result = DB::table(TABLE_EVENT . " as t1")
+                $query = DB::table(TABLE_EVENT . " as t1")
                     ->select(
                         [
                             't1.id',
@@ -38,6 +38,7 @@ class EventController extends Controller
                             't1.location',
                             't1.quota',
                             't1.image',
+                            DB::raw("IF(t1.start_date < NOW(),TRUE,FALSE) AS is_event_expired"),
                             't1.updated_at',
                             't2.name as nama_category',
                             't3.name as nama_organisasi',
@@ -49,8 +50,13 @@ class EventController extends Controller
                     )
                     ->join(TABLE_CATEGORY . " AS t2", "t1.id_category", "=", "t2.id")
                     ->join(TABLE_USERS . " AS t3", "t1.id_organization", "=", "t3.id")
-                    ->where("t1.id", "=", $idEvent)
-                    ->first();
+                    ->where("t1.id", "=", $idEvent);
+
+                // $sql = $this->debugSQL($query);
+                // echo ($sql);
+                // die;
+
+                $result = $query->first();
 
                 if ($result == null) {
                     throw new Exception("Event dengan id $idEvent tidak ditemukan, event sudah dihapus ", 404);
