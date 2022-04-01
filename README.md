@@ -8,14 +8,13 @@ Rest API untuk menampilkan daftar event-event yang dapat diikuti relawan, selain
 
 - Ketikkan pada terminal `composer update`
 - Ketikkan pada terminal `php artisan storage:link`
-- Ketikkan pada terminal `php artisan migrate`
-- Terakhir, ketikkan pada terminal `php artisan serve`
+- Ketikkan pada terminal `php artisan migrate:fresh --seed`
+- Terakhir, ketikkan pada terminal `php artisan serve --host=0.0.0.0`
 
 # Testing
 
 <details>
 <summary> API Category</summary>
-
 
 - Get Category
 
