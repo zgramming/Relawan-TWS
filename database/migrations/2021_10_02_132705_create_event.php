@@ -22,11 +22,11 @@ class CreateEvent extends Migration
             $table->dateTime('start_date');
             $table->dateTime('end_date');
             $table->text('location');
-            $table->double('latitude');
-            $table->double('longitude');
+            $table->double('latitude')->nullable();
+            $table->double('longitude')->nullable();
             $table->enum('type', ['online', 'offline']);
             $table->integer('quota');
-            $table->text('image');
+            $table->text('image')->nullable();
             $table->timestamps();
         });
     }

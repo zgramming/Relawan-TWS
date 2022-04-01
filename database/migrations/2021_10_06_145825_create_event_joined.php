@@ -18,7 +18,7 @@ class CreateEventJoined extends Migration
             $table->integer('id_user');
             $table->integer('id_event');
             $table->date('joined_date');
-            $table->date('cancel_date');
+            $table->date('cancel_date')->nullable();
             $table->enum('status', ['join', 'cancel', 'none']);
             $table->timestamps();
         });

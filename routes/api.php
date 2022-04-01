@@ -51,12 +51,6 @@ Route::put('user/{id}', [UserController::class, 'update']);
 Route::delete('user/{id}', [UserController::class, 'delete']);
 /// END [USER] API
 
-/// START [ORGANIZATION] API
-Route::get('organization', [OrganizationController::class, 'get']);
-Route::get('organization/{id}', [OrganizationController::class, 'get']);
-// Route::post('organization', [OrganizationController::class, 'create']);
-Route::put('organization', [OrganizationController::class, 'update']);
-/// END [ORGANIZATION] API
 
 /// START [EVENT] API
 Route::get('event', [EventController::class, 'get']);
